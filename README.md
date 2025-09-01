@@ -1,4 +1,4 @@
-Classroom Management System
+Classroom App
 
 
 📌 Overview
@@ -11,6 +11,7 @@ The system supports class creation, student enrollment, assignments, announcemen
 
 
 🚀 Features
+
 👨‍🏫 Teachers
 
 Create and manage classes
@@ -87,7 +88,7 @@ backend/
 
 ⚡ Installation & Setup
 1️⃣ Clone the repository
-git clone https://github.com/your-username/classroom-app.git
+git clone https://github.com/mahfuz1715/classroom-app.git
 cd classroom-app
 
 2️⃣ Install dependencies
