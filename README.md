@@ -122,7 +122,9 @@ npm install
 Create a .env file in backend with:
 
 MONGO_URI=your_mongo_connection_string
+
 PORT=5000
+
 JWT_SECRET=your_secret_key
 
 4️⃣ Run the project
