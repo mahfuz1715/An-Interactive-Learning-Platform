@@ -72,23 +72,37 @@ Other: Multer (file upload), RESTful APIs, Role-based access
 
 
 📂 Project Structure
+
 frontend/
+
  ├── src/
+
  │    ├── components/      # Reusable components
+
  │    ├── pages/           # Dashboard, Login, JoinClass, CreateClass, ClassPage, etc.
+
  │    ├── styles.css       # Styling
+
  │    └── App.js           # Main routing
+
 backend/
+
  ├── models/               # Mongoose schemas (User, Classroom, Assignment, etc.)
+
  ├── routes/               # API routes
+
  ├── server.js             # Express server
+
  └── middleware/           # File upload, auth, etc.
 
 
 
 ⚡ Installation & Setup
+
 1️⃣ Clone the repository
+
 git clone https://github.com/mahfuz1715/classroom-app.git
+
 cd classroom-app
 
 2️⃣ Install dependencies
