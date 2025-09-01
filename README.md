@@ -101,7 +101,7 @@ backend/
 
 1️⃣ Clone the repository
 
-git clone https://github.com/mahfuz1715/classroom-app.git
+git clone https://github.com/mahfuz1715/An-Interactive-Learning-Platform
 
 cd classroom-app
 
