@@ -1,4 +1,4 @@
-Classroom App
+A Web Appliaction for an Interactive Learning Platform
 
 
 📌 Overview
