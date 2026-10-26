@@ -1,4 +1,3 @@
-// src/components/AdminGate.jsx
 export default function AdminGate({ children }) {
   const user = JSON.parse(localStorage.getItem("user"));
   if (!user || user.role !== "admin") {

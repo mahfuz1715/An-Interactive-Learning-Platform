@@ -7,7 +7,7 @@ export default function SignupPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPass] = useState("");
-  const [role, setRole] = useState("student"); // keep student/teacher
+  const [role, setRole] = useState("student"); 
 
   const onSignup = async (e) => {
     e.preventDefault();

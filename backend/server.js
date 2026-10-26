@@ -7,14 +7,12 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// MongoDB connection
 mongoose.connect("mongodb://localhost:27017/classroom", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => console.log("✅ MongoDB Connected"))
   .catch(err => console.log("❌ MongoDB Error:", err));
 
-// Schema
 const userSchema = new mongoose.Schema({
   name: String,
   email: String,
@@ -24,7 +22,6 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", userSchema);
 
-// Routes
 app.post("/signup", async (req, res) => {
   const user = new User(req.body);
   await user.save();
@@ -37,9 +34,7 @@ app.post("/login", async (req, res) => {
   else res.status(401).send({ message: "Invalid credentials" });
 });
 
-// Example tiny auth stub (replace with your real JWT later)
 app.use((req, _res, next) => {
-  // If you store logged-in user in header for now:
   const u = req.header("x-user-id");
   if (u) {
     User.findById(u).then(user => { req.user = user; next(); }).catch(()=>next());
@@ -47,10 +42,8 @@ app.use((req, _res, next) => {
 });
 const { requireAdmin } = require("./middlewares/authz");
 
-// Import Classroom model
 const Classroom = require("./models/Classroom");
 
-// ✅ Create a classroom (teacher only)
 app.post("/classes/create", async (req, res) => {
   try {
     const { name, subject, section, description, teacherId, logo } = req.body;
@@ -71,7 +64,6 @@ app.post("/classes/create", async (req, res) => {
   }
 });
 
-// ✅ Join classroom (student uses class code)
 app.post("/classes/join", async (req, res) => {
   try {
     const { code, studentId } = req.body;
@@ -79,7 +71,6 @@ app.post("/classes/join", async (req, res) => {
 
     if (!classroom) return res.status(404).send({ message: "Class not found" });
 
-    // Prevent duplicates
     if (!classroom.students.includes(studentId)) {
       classroom.students.push(studentId);
       await classroom.save();
@@ -91,7 +82,6 @@ app.post("/classes/join", async (req, res) => {
   }
 });
 
-// ✅ Fetch classes for a user
 app.get("/classes/for-user/:userId", async (req, res) => {
   const { userId } = req.params;
   const classes = await Classroom.find({
@@ -100,7 +90,6 @@ app.get("/classes/for-user/:userId", async (req, res) => {
   res.send(classes);
 });
 
-// ✅ Get details of a single classroom by ID
 app.get("/classes/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -118,9 +107,6 @@ app.get("/classes/:id", async (req, res) => {
 
 const Post = require("./models/Post");
 
-
-
-// ✅ Get all posts for a class
 app.get("/classes/:id/posts", async (req, res) => {
   try {
     const { id } = req.params;
@@ -133,7 +119,6 @@ app.get("/classes/:id/posts", async (req, res) => {
   }
 });
 
-// ✅ Delete a post
 app.delete("/posts/:postId", async (req, res) => {
   try {
     const { postId } = req.params;
@@ -144,7 +129,6 @@ app.delete("/posts/:postId", async (req, res) => {
   }
 });
 
-// ✅ Edit a post
 app.put("/posts/:postId", async (req, res) => {
   try {
     const { postId } = req.params;
@@ -162,7 +146,6 @@ app.put("/posts/:postId", async (req, res) => {
 
 const Comment = require("./models/Comment");
 
-// ✅ Add a comment to a post
 app.post("/posts/:postId/comments", async (req, res) => {
   try {
     const { postId } = req.params;
@@ -182,7 +165,6 @@ app.post("/posts/:postId/comments", async (req, res) => {
   }
 });
 
-// ✅ Get all comments for a post
 app.get("/posts/:postId/comments", async (req, res) => {
   try {
     const { postId } = req.params;
@@ -195,7 +177,6 @@ app.get("/posts/:postId/comments", async (req, res) => {
   }
 });
 
-// ✅ Update a comment's content
 app.put("/comments/:commentId", async (req, res) => {
   try {
     const { commentId } = req.params;
@@ -214,7 +195,6 @@ app.put("/comments/:commentId", async (req, res) => {
   }
 });
 
-// ✅ Delete a comment
 app.delete("/comments/:commentId", async (req, res) => {
   try {
     const { commentId } = req.params;
@@ -231,25 +211,18 @@ const multer = require("multer");
 const Assignment = require("./models/Assignment");
 const Submission = require("./models/Submission");
 
-// File storage setup
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); // files will be saved inside backend/uploads
+    cb(null, "uploads/"); 
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // unique filename
+    cb(null, Date.now() + path.extname(file.originalname)); 
   }
 });
 const upload = multer({ storage });
 
-// Serve uploaded files statically
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-
-
-
-
-// GET /classes/:id/assignments
 app.get("/classes/:id/assignments", async (req, res) => {
   try {
     const assignments = await Assignment.find({ classroomId: req.params.id })
@@ -260,14 +233,11 @@ app.get("/classes/:id/assignments", async (req, res) => {
   }
 });
 
-// POST /assignments/:id/submit
-// body (multipart if file): { studentId, answerText? } + file?
 app.post("/assignments/:id/submit", upload.single("file"), async (req, res) => {
   try {
     const { studentId, answerText } = req.body;
     const assignmentId = req.params.id;
 
-    // upsert: if submission already exists for this student, update it
     const updated = await Submission.findOneAndUpdate(
       { assignmentId, studentId },
       {
@@ -281,13 +251,11 @@ app.post("/assignments/:id/submit", upload.single("file"), async (req, res) => {
 
     res.send({ message: "Submission saved", submission: updated });
   } catch (err) {
-    // likely unique index error when file-only update hits — but we use upsert above
     console.error(err);
     res.status(500).send({ message: "Error submitting assignment" });
   }
 });
 
-// GET /assignments/:id/submissions
 app.get("/assignments/:id/submissions", async (req, res) => {
   try {
     const submissions = await Submission.find({ assignmentId:
@@ -300,7 +268,6 @@ app.get("/assignments/:id/submissions", async (req, res) => {
       } 
 });
 
-// ✅ Get a single student's submission for an assignment
 app.get("/assignments/:id/submission/:studentId", async (req, res) => {
   try {
     const { id, studentId } = req.params;
@@ -324,16 +291,12 @@ app.get("/assignments/:id/submission/:studentId", async (req, res) => {
   }
 });
 
-
-
 const AttendanceGrid = require("./models/AttendanceGrid");
 
-// ✅ Get attendance grid (teacher only)
 app.get("/classes/:id/attendance-grid", async (req, res) => {
   try {
     let grid = await AttendanceGrid.findOne({ classroomId: req.params.id });
     if (!grid) {
-      // init with student list
       const classroom = await Classroom.findById(req.params.id).populate("students", "name email");
       grid = new AttendanceGrid({
         classroomId: req.params.id,
@@ -352,18 +315,16 @@ app.get("/classes/:id/attendance-grid", async (req, res) => {
   }
 });
 
-// ✅ Update attendance for a specific date
 app.put("/classes/:id/attendance-grid", async (req, res) => {
   try {
     const { date, updates } = req.body; 
-    // updates = [ { studentId, status } ]
     let grid = await AttendanceGrid.findOne({ classroomId: req.params.id });
     if (!grid) return res.status(404).send({ message: "Grid not found" });
 
     updates.forEach(u => {
       const rec = grid.records.find(r => r.studentId.toString() === u.studentId);
       if (rec) {
-        rec.dates.set(date, u.status); // status = "present"/"absent"/"✔"/"✘"
+        rec.dates.set(date, u.status); 
       }
     });
 
@@ -376,7 +337,6 @@ app.put("/classes/:id/attendance-grid", async (req, res) => {
 
 const Notification = require("./models/Notification");
 
-// ✅ Teacher creates post (announcement)
 app.post("/classes/:id/posts", async (req, res) => {
   try {
     const { id } = req.params;
@@ -385,7 +345,6 @@ app.post("/classes/:id/posts", async (req, res) => {
     const post = new Post({ classroomId: id, author: authorId, content });
     await post.save();
 
-    // Create notification for students (prevent duplicates)
     const classroom = await Classroom.findById(id);
     for (const studentId of classroom.students) {
       const exists = await Notification.findOne({
@@ -409,7 +368,6 @@ app.post("/classes/:id/posts", async (req, res) => {
   }
 });
 
-// ✅ Teacher uploads materials
 app.post("/classes/:id/upload", upload.single("file"), async (req, res) => {
   try {
     if (!req.file) return res.status(400).send({ message: "No file uploaded" });
@@ -417,7 +375,6 @@ app.post("/classes/:id/upload", upload.single("file"), async (req, res) => {
     const classroom = await Classroom.findById(req.params.id);
     if (!classroom) return res.status(404).send({ message: "Class not found" });
 
-    // Duplicate check for files
     const alreadyExists = classroom.materials.some(
       (m) => m.originalName === req.file.originalname
     );
@@ -425,7 +382,6 @@ app.post("/classes/:id/upload", upload.single("file"), async (req, res) => {
       return res.status(400).send({ message: "File already exists in the classroom" });
     }
 
-    // Save file to classroom
     classroom.materials.push({
       originalName: req.file.originalname,
       url: `/uploads/${req.file.filename}`,
@@ -433,7 +389,6 @@ app.post("/classes/:id/upload", upload.single("file"), async (req, res) => {
     });
     await classroom.save();
 
-    // Create notifications for students (prevent duplicates)
     for (const studentId of classroom.students) {
       const exists = await Notification.findOne({
         classroomId: req.params.id,
@@ -457,7 +412,6 @@ app.post("/classes/:id/upload", upload.single("file"), async (req, res) => {
   }
 });
 
-// ✅ Teacher creates assignment
 app.post("/classes/:id/assignments", upload.single("file"), async (req, res) => {
   try {
     const { title, description, dueDate } = req.body;
@@ -497,7 +451,6 @@ app.post("/classes/:id/assignments", upload.single("file"), async (req, res) => 
   }
 });
 
-// ✅ Teacher grades submission
 app.put("/submissions/:id/grade", async (req, res) => {
   try {
     const { grade, feedback } = req.body;
@@ -510,11 +463,9 @@ app.put("/submissions/:id/grade", async (req, res) => {
 
     if (!sub) return res.status(404).send({ message: "Submission not found" });
 
-    // Find assignment for classroom reference
     const assignment = await Assignment.findById(sub.assignmentId);
     if (!assignment) return res.status(404).send({ message: "Assignment not found" });
 
-    // Prevent duplicate notification
     const exists = await Notification.findOne({
       classroomId: assignment.classroomId,
       userId: sub.studentId._id,
@@ -536,7 +487,6 @@ app.put("/submissions/:id/grade", async (req, res) => {
   }
 });
 
-// Student sees only their own notifications
 app.get("/classes/:id/notifications/:userId", async (req, res) => {
   try {
     const { id, userId } = req.params;
@@ -550,19 +500,15 @@ app.get("/classes/:id/notifications/:userId", async (req, res) => {
   }
 });
 
-// ===== Admin Routes =====
-
-// Get all users
 app.get("/admin/users", async (req, res) => {
   try {
-    const users = await User.find({}, "name email role"); // return name, email, role only
+    const users = await User.find({}, "name email role"); 
     res.send(users);
   } catch (err) {
     res.status(500).send({ message: "Error fetching users" });
   }
 });
 
-// Update user role
 app.put("/admin/users/:id/role", async (req, res) => {
   try {
     const { role } = req.body;
@@ -573,7 +519,6 @@ app.put("/admin/users/:id/role", async (req, res) => {
   }
 });
 
-// Delete user
 app.delete("/admin/users/:id", async (req, res) => {
   try {
     await User.findByIdAndDelete(req.params.id);
@@ -583,7 +528,6 @@ app.delete("/admin/users/:id", async (req, res) => {
   }
 });
 
-// Get all classes
 app.get("/admin/classes", async (req, res) => {
   try {
     const classes = await Classroom.find()
@@ -595,7 +539,6 @@ app.get("/admin/classes", async (req, res) => {
   }
 });
 
-// ===== Reports =====
 app.get("/admin/stats", async (req, res) => {
   try {
     const userCount = await User.countDocuments();
@@ -609,5 +552,4 @@ app.get("/admin/stats", async (req, res) => {
   }
 });
 
-// Start server
 app.listen(5000, () => console.log("🚀 Server running on http://localhost:5000"));

@@ -1,4 +1,3 @@
-// import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginPage from "./LoginPage";
 import SignupPage from "./SignupPage";
@@ -15,7 +14,6 @@ import AdminDashboard from "./AdminDashboard";
 import AdminGate from "./components/AdminGate";
 import "./styles.css";
 
-// Inside <Routes>:
 <Route path="/classes" element={<ClassroomsPage />} />
 
 function App() {
@@ -31,7 +29,7 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/create-class" element={<CreateClass />} /> {/* ✅ new */}
+        <Route path="/create-class" element={<CreateClass />} /> 
         <Route path="/my-classes" element={<MyClasses />} />
         <Route path="/join-class" element={<JoinClass />} />
         <Route path="/class/:id" element={<ClassPage />} />

@@ -5,7 +5,6 @@ function Comments({ postId, user }) {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
 
-  // Fetch comments initially
   useEffect(() => {
     axios
       .get(`http://localhost:5000/posts/${postId}/comments`)
@@ -13,7 +12,6 @@ function Comments({ postId, user }) {
       .catch((err) => console.error(err));
   }, [postId]);
 
-  // Add a comment
   const handleComment = async () => {
     if (!newComment.trim()) return;
     try {
@@ -28,7 +26,6 @@ function Comments({ postId, user }) {
     }
   };
 
-  // Start editing a comment (local UI only)
   const startEdit = (id, currentContent) => {
     setComments((prev) =>
       prev.map((c) =>
@@ -37,14 +34,12 @@ function Comments({ postId, user }) {
     );
   };
 
-  // Cancel editing
   const cancelEdit = (id) => {
     setComments((prev) =>
       prev.map((c) => (c._id === id ? { ...c, isEditing: false } : c))
     );
   };
 
-  // Save edited comment
   const saveEdit = async (id, content) => {
     try {
       const res = await axios.put(`http://localhost:5000/comments/${id}`, {
@@ -58,7 +53,6 @@ function Comments({ postId, user }) {
     }
   };
 
-  // Delete comment
   const deleteComment = async (id) => {
     if (!window.confirm("Delete this comment?")) return;
     try {
@@ -69,13 +63,11 @@ function Comments({ postId, user }) {
     }
   };
 
-  // Permission check
   const canManage = (comment) =>
     user.role === "teacher" || user._id === comment.author._id;
 
   return (
     <div style={{ marginTop: "10px", paddingLeft: "20px", borderLeft: "2px solid #eee" }}>
-      {/* Existing comments */}
       {comments.length === 0 ? (
         <p style={{ fontSize: "13px", color: "#666" }}>No comments yet.</p>
       ) : (
@@ -88,7 +80,6 @@ function Comments({ postId, user }) {
               </span>
             </p>
 
-            {/* content vs edit mode */}
             {c.isEditing ? (
               <>
                 <input
@@ -116,7 +107,6 @@ function Comments({ postId, user }) {
               <p style={{ margin: "2px 0 4px 0", fontSize: "14px" }}>{c.content}</p>
             )}
 
-            {/* actions */}
             {canManage(c) && !c.isEditing && (
               <div style={{ marginTop: "2px" }}>
                 <button onClick={() => startEdit(c._id, c.content)} style={{ marginRight: "8px" }}>
@@ -129,7 +119,6 @@ function Comments({ postId, user }) {
         ))
       )}
 
-      {/* Add new comment */}
       <div style={{ marginTop: "10px" }}>
         <input
           type="text"

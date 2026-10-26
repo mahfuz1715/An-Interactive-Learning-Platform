@@ -1,4 +1,3 @@
-// src/Dashboard.js
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import MyClasses from "./MyClasses";
@@ -13,8 +12,6 @@ export default function Dashboard() {
   const isTeacher = user?.role === "teacher";
   const isStudent = user?.role === "student";
 
-  // Receive classes from MyClasses so we can show them in the sidebar too
-  // Dashboard.js
   const handleClassesLoaded = useCallback((arr) => {
     setClassesForSidebar(arr);
   }, []);
@@ -25,7 +22,7 @@ export default function Dashboard() {
     if (!classesForSidebar?.length && Array.isArray(window.__lastClasses)) {
       setClassesForSidebar(window.__lastClasses);
     }
-  }, [classesForSidebar?.length]); // run once
+  }, [classesForSidebar?.length]); 
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -37,7 +34,6 @@ export default function Dashboard() {
     navigate(`/class/${cls._id}`);
   };
 
-  // --- Styles (scoped, no conflict) ---
   const wrap = {
     minHeight: "100vh",
     background:
@@ -122,7 +118,6 @@ export default function Dashboard() {
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            {/* + Create / + Join */}
             {isTeacher && (
               <button
                 style={iconBtn}
@@ -142,14 +137,12 @@ export default function Dashboard() {
               </button>
             )}
 
-            {/* Profile+logout (simple + reliable) */}
             <button style={dangerBtn} onClick={handleLogout} title="Logout">
               🚪 Logout
             </button>
           </div>
         </div>
 
-        {/* Left: Sidebar */}
         <aside style={panel}>
           <p style={{ ...welcome, fontSize: 20 }}>
             Welcome <span style={{ color: "#4338ca" }}>{user?.name || "User"}</span>!
@@ -158,7 +151,6 @@ export default function Dashboard() {
             You are logged in as <b>{user?.role}</b>
           </p>
 
-          {/* Teaching (for teachers) */}
           {isTeacher && (
             <div style={{ marginTop: 18 }}>
               <button
@@ -188,7 +180,6 @@ export default function Dashboard() {
             </div>
           )}
 
-          {/* Enrolled (for students) */}
           {isStudent && (
             <div style={{ marginTop: 18 }}>
               <button
@@ -219,7 +210,6 @@ export default function Dashboard() {
           )}
         </aside>
 
-        {/* Middle: My Classes (cards) */}
         <main style={{ ...panel, padding: 0 }}>
           <div style={{ padding: "16px 16px 0 16px" }}>
             <h2 style={sectionTitle}>🗂️ My Classes</h2>
@@ -233,10 +223,8 @@ export default function Dashboard() {
           </div>
         </main>
 
-        {/* Right: Upcoming panel */}
         <aside style={panel}>
           <h3 style={sectionTitle}>🗓️ Upcoming</h3>
-          {/* You can replace this with real data later */}
           <div
             style={{
               border: "1px dashed rgba(0,0,0,.12)",

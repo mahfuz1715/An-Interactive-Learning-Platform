@@ -1,20 +1,10 @@
-// src/MyClasses.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-/**
- * Props:
- * - embedded?: boolean   // if used inside Dashboard
- * - onLoaded?: (classes) => void
- * - onCardClick?: (cls) => void
- */
 export default function MyClasses({ embedded = false, onLoaded, onCardClick }) {
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user] = useState(() => JSON.parse(localStorage.getItem("user")));
-
-  // 🔁 If your route is different, change it here:
-  // const API_URL = "http://localhost:5000/my-classes";
 
   useEffect(() => {
   if (!user) return;
@@ -24,16 +14,15 @@ export default function MyClasses({ embedded = false, onLoaded, onCardClick }) {
     .get(`http://localhost:5000/classes/for-user/${user._id}`)
     .then((res) => {
       setClasses(res.data || []);
-      if (onLoaded) onLoaded(res.data || []);   // ✅ sidebar update
+      if (onLoaded) onLoaded(res.data || []);   
     })
     .catch(() => {
       setClasses([]);
-      if (onLoaded) onLoaded([]);               // ✅ sidebar empty
+      if (onLoaded) onLoaded([]);               
     })
     .finally(() => setLoading(false));
-}, [user, onLoaded]); // reload এও চলবে কিন্তু infinite loop হবে না
+}, [user, onLoaded]); 
 
-  // --- styles for polished cards ---
   const grid = {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",

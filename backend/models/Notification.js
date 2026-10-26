@@ -10,10 +10,10 @@ const notificationSchema = new mongoose.Schema(
     userId: { 
       type: mongoose.Schema.Types.ObjectId, 
       ref: "User", 
-      required: true   // 👈 now every notification is tied to one student
+      required: true   
     },
     message: { type: String, required: true },
-    isRead: { type: Boolean, default: false } // optional, for marking read/unread
+    isRead: { type: Boolean, default: false } 
   },
   { timestamps: true }
 );

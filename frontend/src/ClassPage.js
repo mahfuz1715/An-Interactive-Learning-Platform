@@ -17,22 +17,19 @@ function ClassPage() {
   const [answerText, setAnswerText] = useState("");
   const [answerFile, setAnswerFile] = useState(null);
 
-  // NEW STATES (kept from your code)
   const [submissions, setSubmissions] = useState({});
   const [loadingSubs, setLoadingSubs] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [submissionStatus, setSubmissionStatus] = useState({});
 
-  // 🔹 UI-ONLY: navbar tabs
-  const [activeTab, setActiveTab] = useState("null"); // "users" | "assignments" | "notifications"
+  const [activeTab, setActiveTab] = useState("null"); 
 
   const user = JSON.parse(localStorage.getItem("user"));
 
   const tabs = user.role === "teacher"
-    ? ["users", "assignments", "attendance"]   // teacher: Attendance tab
-    : ["users", "assignments", "notifications"]; // student: Notifications tab
+    ? ["users", "assignments", "attendance"]   
+    : ["users", "assignments", "notifications"]; 
 
-  // === Your original effects & handlers (unchanged functionality) ===
   useEffect(() => {
     axios
       .get(`http://localhost:5000/classes/${id}`)
@@ -205,11 +202,11 @@ function ClassPage() {
 
   return (
     <div style={styles.pageShell}>
-      {/* Decorative background */}
+
       <div style={styles.bgPattern} />
 
       <div style={styles.container}>
-        {/* Top bar / title card */}
+
         <div style={styles.headerCard}>
           <div>
             <h1 style={styles.title}>{classData.name}</h1>
@@ -224,13 +221,10 @@ function ClassPage() {
           )}
         </div>
 
-        {/* Sticky tab nav */}
         <div style={styles.tabBarWrapper}>
           <div style={styles.tabBar}>
             {tabs.map((tab) => {
-              // If Attendance then directly 
               if (tab === "attendance") {
-                // শুধু লিঙ্ক, কোনো active স্টাইল নয়
                 return (
                   <Link
                     key="attendance"
@@ -242,7 +236,6 @@ function ClassPage() {
                 );
               }
 
-              // Others tab are same as it is
               return (
                 <button
                   key={tab}
@@ -258,19 +251,16 @@ function ClassPage() {
           </div>
         </div>
 
-        {/* TAB PANELS */}
         {activeTab === "users" && (
           <section style={styles.section}>
             <h2 style={styles.sectionTitle}>Users</h2>
             <div style={styles.grid12}>
-              {/* Teacher */}
               <div style={{ ...styles.card, background: "linear-gradient(180deg,#e0f2fe, #f8fbff)" }}>
                 <h3 style={styles.cardTitle}>👨‍🏫 Teacher</h3>
                 <p style={{ margin: 0, fontWeight: 700 }}>{classData.teacherId?.name}</p>
                 <p style={{ marginTop: 6, color: "#4b5563" }}>{classData.teacherId?.email}</p>
               </div>
 
-              {/* Students (name only as you requested) */}
               <div style={styles.card}>
                 <h3 style={styles.cardTitle}>👩‍🎓 Students</h3>
                 {classData.students.length === 0 ? (
@@ -349,7 +339,6 @@ function ClassPage() {
                     </p>
                   )}
 
-                  {/* Student submission */}
                   {user.role === "student" && (
                     <div style={{ marginTop: 12 }}>
                       <textarea
@@ -365,7 +354,6 @@ function ClassPage() {
                         </button>
                       </div>
 
-                      {/* Student status */}
                       <div style={{ marginTop: 6 }}>
                         {submissions[a._id]?.find((s) => s.studentId._id === user._id) ? (
                           (() => {
@@ -386,7 +374,6 @@ function ClassPage() {
                     </div>
                   )}
 
-                  {/* Teacher submissions viewer */}
                   {user.role === "teacher" && (
                     <div style={{ marginTop: 12 }}>
                       <button onClick={() => fetchSubmissions(a._id)} style={styles.secondaryBtn}>
@@ -472,7 +459,6 @@ function ClassPage() {
           </section>
         )}
 
-        {/* Classroom details (always shown after tab content) */}
         <section style={styles.section}>
           <h2 style={styles.sectionTitle}>Class Materials</h2>
           {user.role === "teacher" && (
@@ -502,7 +488,6 @@ function ClassPage() {
           </div>
         </section>
 
-        {/* Announcements & Posts */}
         <section style={styles.section}>
           <div style={styles.sectionHeaderRow}>
             <h2 style={styles.sectionTitle}>Announcements & Posts</h2>
@@ -592,7 +577,6 @@ function ClassPage() {
                   </div>
                 )}
 
-                {/* Comments */}
                 <div style={{ marginTop: 12 }}>
                   <Comments postId={p._id} user={user} />
                 </div>
@@ -605,7 +589,6 @@ function ClassPage() {
   );
 }
 
-/* -------------------- Styles -------------------- */
 const styles = {
   pageShell: {
     minHeight: "100vh",
@@ -762,7 +745,6 @@ const styles = {
   },
 };
 
-// CSS keyframes (inline injection)
 const styleTag = document.createElement("style");
 styleTag.innerHTML = `
 @keyframes spin { to { transform: rotate(360deg); } }

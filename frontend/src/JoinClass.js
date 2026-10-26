@@ -8,7 +8,6 @@ export default function JoinClass() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
 
-  // ✅ keep your own endpoint if different
   async function handleJoin(e) {
     e.preventDefault();
     if (!code.trim()) return;
@@ -58,7 +57,6 @@ export default function JoinClass() {
           </div>
         </section>
 
-        {/* Optional chalkboard doodle */}
         <div style={ui.illustration} aria-hidden>
           <div style={ui.board} />
           <div style={ui.chalk1} />

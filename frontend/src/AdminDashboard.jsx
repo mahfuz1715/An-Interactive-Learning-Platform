@@ -25,17 +25,15 @@ export default function AdminDashboard() {
     setUsers(prev => prev.filter(u => u._id !== id));
   };
 
-  // ✅ Proper logout
   const handleLogout = () => {
     localStorage.removeItem("user");
-    navigate("/");   // redirect to login page
+    navigate("/");   
   };
 
   const wrapStyle = {
     minHeight: "100vh",
     padding: "24px",
     color: "#111827",
-    // ✅ Background from public/ (no bundler resolution needed)
     backgroundImage: `linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.35)), url(${process.env.PUBLIC_URL}/bg-admin.jpg)`,
     backgroundSize: "cover",
     backgroundPosition: "center",
@@ -54,7 +52,6 @@ export default function AdminDashboard() {
 
   return (
     <div style={wrapStyle}>
-      {/* Header */}
       <div style={{ ...glass, display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 20px", marginBottom: 24, background: "rgba(0,0,0,0.45)", color: "white" }}>
         <h1 style={{ margin: 0, fontSize: 32, fontWeight: 800 }}>⚙️ Admin Dashboard</h1>
         <button
@@ -65,7 +62,6 @@ export default function AdminDashboard() {
         </button>
       </div>
 
-      {/* Stats */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16, marginBottom: 24 }}>
         {[
           { title: "Users", count: stats.userCount, icon: "👥" },
@@ -80,7 +76,6 @@ export default function AdminDashboard() {
         ))}
       </div>
 
-      {/* Manage Users */}
       <h2 style={{ ...sectionTitle, fontSize: 24, margin: "8px 0 12px" }}>👥 Manage Users</h2>
       <div style={{ overflowX: "auto", marginBottom: 24 }}>
         <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: 0, ...glass }}>
@@ -122,7 +117,6 @@ export default function AdminDashboard() {
         </table>
       </div>
 
-      {/* Manage Classes */}
       <h2 style={{ ...sectionTitle, fontSize: 24, margin: "8px 0 12px" }}>📚 Manage Classes</h2>
       <div style={{ display: "grid", gap: 16 }}>
         {classes.map(c => (

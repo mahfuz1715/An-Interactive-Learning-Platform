@@ -12,7 +12,6 @@ export default function CreateClass() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
 
-  // ✅ keep your own endpoint if different
   async function handleCreate(e) {
     e.preventDefault();
     if (!name.trim()) return;
@@ -45,16 +44,13 @@ export default function CreateClass() {
         </div>
       </header>
 
-      {/* Content canvas */}
       <main style={ui.canvas}>
-        {/* Illustration (optional) */}
         <div style={ui.illustration} aria-hidden>
           <div style={ui.boardShadow} />
           <div style={ui.board} />
           <div style={ui.desk} />
         </div>
 
-        {/* Glass card */}
         <form onSubmit={handleCreate} style={ui.card}>
           <p style={ui.lead}>Fill the details to set up your classroom</p>
 
@@ -123,7 +119,6 @@ export default function CreateClass() {
   );
 }
 
-/* ---------- inline styles (no CSS file changes needed) ---------- */
 const ui = {
   page: {
     minHeight: "100vh",
